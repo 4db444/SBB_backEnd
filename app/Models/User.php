@@ -2,31 +2,39 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
+use App\models\Group;
+use App\models\Income;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasFactory, Notifiable;
-
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        "first_name",
+        "last_name",
+        "email",
+        "password",
+        "profile"
     ];
 
     protected $hidden = [
-        'password',
-        'remember_token',
+        "password"
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+    public function incomes () {
+        return $this->hasMany(Income::class);
+    }
+
+    public function personalExpences (){
+        return $this->hasMany(Expence::class);
+    }
+
+    public function sharedExpences (){
+        return $this->belongsToMany(Expence::class, "group_expence_shares")
+            ->withPivote("amount")
+            ->withTimestamps();
+    }
+
+    public function groups (){
+        return $this->belongsToMany(Group::class);
     }
 }
