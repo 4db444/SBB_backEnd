@@ -24,11 +24,11 @@ class User extends Model
         return $this->hasMany(Income::class);
     }
 
-    public function personalExpences (){
+    public function expences (){
         return $this->hasMany(Expence::class);
     }
 
-    public function sharedExpences (){
+    public function groupExpenceShares (){
         return $this->belongsToMany(Expence::class, "group_expence_shares")
             ->withPivote("amount")
             ->withTimestamps();
