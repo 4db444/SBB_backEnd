@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticable;
 use App\models\Group;
 use App\models\Income;
 
-class User extends Model
+class User extends Authenticable
 {
     protected $fillable = [
         "first_name",
@@ -24,12 +25,12 @@ class User extends Model
         return $this->hasMany(Income::class);
     }
 
-    public function expences (){
-        return $this->hasMany(Expence::class);
+    public function expenses (){
+        return $this->hasMany(Expense::class);
     }
 
-    public function groupExpenceShares (){
-        return $this->belongsToMany(Expence::class, "group_expence_shares")
+    public function groupExpenseShares (){
+        return $this->belongsToMany(Expense::class, "group_expense_shares")
             ->withPivote("amount")
             ->withTimestamps();
     }

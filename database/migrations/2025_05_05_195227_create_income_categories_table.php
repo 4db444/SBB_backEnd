@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('income_categories', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->string("name")->unique();
+            $table->unsignedBigInteger("id_parent_category")->nullable();
+
+            $table->foreign("id_parent_category")->references("id")->on("income_categories")->ondelete("cascade");
+            
             $table->timestamps();
         });
     }

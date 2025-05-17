@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expence_categories', function (Blueprint $table) {
+        Schema::create('group_expense_shares', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->float("amount");
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("expense_id");
+
+            $table->foreign("user_id")->references("id")->on("users");
+            $table->foreign("expense_id")->references("id")->on("expenses");
+
             $table->timestamps();
         });
     }
@@ -23,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('expence_categories');
+        Schema::dropIfExists('group_expense_shares');
     }
 };

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\Expence;
+use App\Models\Expense;
 
 class Group extends Model
 {
@@ -16,7 +16,7 @@ class Group extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function expences (){
-        return $this->hasMany(Expence::class);
+    public function expenses (){
+        return $this->hasMany(Expense::class);
     }
 }

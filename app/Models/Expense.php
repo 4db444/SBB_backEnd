@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\ExpenceCategory;
+use App\Models\ExpenseCategory;
 use App\Models\Group;
 
-class Expence extends Model
+class Expense extends Model
 {
     protected $fillable = [
         "amount", 
@@ -15,7 +15,7 @@ class Expence extends Model
     ];
 
     public function category (){
-        return $this->belongsTo(ExpenceCategory::class);
+        return $this->belongsTo(ExpenseCategory::class);
     }
 
     public function group () {

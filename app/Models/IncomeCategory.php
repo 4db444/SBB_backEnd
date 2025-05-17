@@ -14,4 +14,12 @@ class IncomeCategory extends Model
     public function incomes (){
         return $this->hasMany(Income::class);
     }
+
+    public function parent(){
+        return $this->belongsTo(IncomeCategory::class, "id_parent_category");
+    }
+
+    public function children (){
+        return $this->hasMany(IncomeCategory::class, "id_parent_category");
+    }
 }

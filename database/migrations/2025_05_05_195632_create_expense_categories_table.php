@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('group_expence_shares', function (Blueprint $table) {
+        Schema::create('expense_categories', function (Blueprint $table) {
             $table->id();
-            $table->float("amount");
-            $table->unsignedBigInteger("user_id");
-            $table->unsignedBigInteger("expence_id");
+            $table->string("name")->unique();
+            $table->unsignedBigInteger("id_parent_category")->nullable();
 
-            $table->foreign("user_id")->references("id")->on("users");
-            $table->foreign("expence_id")->references("id")->on("expences");
-
+            $table->foreign("id_parent_category")->references("id")->on("expense_categories")->ondelete("cascade");
+            
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('group_expence_shares');
+        Schema::dropIfExists('expense_categories');
     }
 };
