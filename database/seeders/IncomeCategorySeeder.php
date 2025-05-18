@@ -14,19 +14,49 @@ class IncomeCategorySeeder extends Seeder
     public function run(): void
     {
         $income_categories = [
-            ["name" => "Scholarships & Grants"],
-            ["name" => "Student Loans"],
-            ["name" => "Family Support"],
-            ["name" => "Part-time Job / Freelance"],
-            ["name" => "Internship Stipend"],
-            ["name" => "Selling Items"],
-            ["name" => "Gifts"],
-            ["name" => "Side Hustles"],
-            ["name" => "Savings Withdrawal"],
+            [
+                "name" => "Scholarships & Financial Aid",
+                "children" => [
+                    ["name" => "Scholarships"],
+                    ["name" => "Grants"],
+                    ["name" => "Government Financial Aid"],
+                    ["name" => "University Stipends"],
+                    ["name" => "Family Suport"],
+                    ["name" => "Gifts"],
+                ]
+            ],
+            [
+                "name" => "Work & Jobs",
+                "children" => [
+                    ["name" => "Part-time Job"],
+                    ["name" => "Freelance Income"],
+                    ["name" => "Internship Stipend"],
+                    ["name" => "On-campus Job"],
+                ]
+            ],
+            [
+                "name" => "Side Income",
+                "children" => [
+                    ['name' => "Selling Items"],
+                    ['name' => "Side Hustles"],
+                ]
+            ],
+            [
+                "name" => "Withdrawals",
+                "children" => [
+                    ["name" => "Savings Withdrawal"],
+                    ["name" => "Reimbursement"],
+                ]
+            ]
         ];
 
         foreach($income_categories as $income_category){
-            IncomeCategory::create($income_category);
-        };
+            $parent_category = IncomeCategory::create(["name" => $income_category['name']]);
+            foreach($income_category["children"] as $child){
+                $child_category = IncomeCategory::create($child);
+                $child_category->parent()->associate($parent_category);
+                $child_category->save();
+            }
+        }
     }
 }
