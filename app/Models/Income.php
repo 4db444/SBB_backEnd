@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Income extends Model
 {
+    use HasUlids;
+
     protected $fillable = [
         "amount", "description"
     ];
@@ -15,6 +18,6 @@ class Income extends Model
     }
 
     public function category (){
-        return $this->belongsTo(IncomeCategory::class);
+        return $this->belongsTo(IncomeCategory::class, 'income_category_id');
     }
 }

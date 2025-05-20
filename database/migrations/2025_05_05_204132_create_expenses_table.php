@@ -13,8 +13,8 @@ return new class extends Migration
             $table->float("amount");
             $table->text("description");
             
-            $table->unsignedBigInteger("expense_category_id");
-            $table->unsignedBigInteger("group_id");
+            $table->unsignedBigInteger("expense_category_id")->nullable();
+            $table->unsignedBigInteger("group_id")->nullable();
             $table->unsignedBigInteger("user_id");
 
             $table->foreign("expense_category_id")->references("id")->on("expense_categories");

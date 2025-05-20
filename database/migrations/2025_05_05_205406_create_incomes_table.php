@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('incomes', function (Blueprint $table) {
-            $table->id();
+            $table->ulid("id");
             $table->float("amount");
-            $table->text("description");
-            $table->unsignedBigInteger("user_id");
-            $table->unsignedBigInteger("income_category_id");
+            $table->text("description")->nullable();
+            $table->unsignedBigInteger("user_id")->nullable();
+            $table->unsignedBigInteger("income_category_id")->nullable();
 
             $table->foreign("user_id")->references("id")->on("users");
             $table->foreign("income_category_id")->references("id")->on("income_categories");

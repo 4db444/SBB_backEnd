@@ -15,7 +15,7 @@ class AuthController extends Controller
             $credentials = $request->validate([
                 "first_name" => ["required", "regex:/^[a-z]{2,}(\s[a-z]{2,})?$/i"],
                 "last_name" => ["required", "regex:/^[a-z]{2,}(\s[a-z]{2,})?$/i"],
-                "password" => "required|confirmed|min:8",
+                "password" => ['required','confirmed','min:8', "regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/"],
                 "email" => "required|email|unique:users",
             ]);
 
@@ -48,5 +48,13 @@ class AuthController extends Controller
     public function show (Request $request){
         $user = Auth::user();
         return response()->json($user);
+    }
+
+    public function destroy (Request $request){
+        Auth::guard("web")->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return response()->json(["msg" => "logged out successfully !"], 200);
     }
 }
