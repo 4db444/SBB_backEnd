@@ -11,10 +11,17 @@ use Throwable;
 class IncomeController extends Controller
 {
     public function index (){
-        $user = Auth::user();
-        $incomes = $user->incomes;
-
-        return response()->json($income);
+        try{
+            $user = Auth::user();
+            $incomes = $user->incomes;
+    
+            return response()->json($incomes);
+        }catch(Throwable $e){
+            return response()->json([
+                "message" => "something went wrong !",
+                "error" => $e->getMessage()
+            ]);
+        }
     }
 
     public function store (Request $request){
