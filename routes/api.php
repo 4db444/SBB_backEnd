@@ -8,6 +8,7 @@ use App\Http\Controllers\IncomeController;
 
 Route::middleware("auth:sanctum")->group(function(){
     Route::prefix("/income")->group(function(){
+        Route::get("/", [IncomeController::class, "index"]);
         Route::get("/{id}", [IncomeController::class, "show"]);
         Route::post("/", [IncomeController::class, "store"]);
         Route::put("/{id}", [IncomeController::class, "update"]);

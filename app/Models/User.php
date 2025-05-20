@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticable;
-use App\models\Group;
-use App\models\Income;
+use App\Models\Group;
+use App\Models\Income;
 
 class User extends Authenticable
 {

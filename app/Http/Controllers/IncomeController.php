@@ -10,6 +10,13 @@ use Throwable;
 
 class IncomeController extends Controller
 {
+    public function index (){
+        $user = Auth::user();
+        $incomes = $user->incomes;
+
+        return response()->json($income);
+    }
+
     public function store (Request $request){
         try{
             $validated_income = $request->validate([
@@ -38,5 +45,20 @@ class IncomeController extends Controller
                 "error" => $e->getMessage()
             ]);
         }
+    }
+
+    public function show ($id){
+        try{
+            $user = Auth::user();
+            $income = $user->incomes()->where("id", $id)->firstOrFail();
+
+            return response()->json($income);
+        }catch (Throwable $e){
+            return response()->json(['message' => "oops! looks like something went wrong !"]);
+        }
+    }
+
+    public function destroy($id){
+
     }
 }
