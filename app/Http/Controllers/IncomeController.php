@@ -54,18 +54,18 @@ class IncomeController extends Controller
         }
     }
 
-    public function show ($id){
+    public function destroy($id){
         try{
             $user = Auth::user();
             $income = $user->incomes()->where("id", $id)->firstOrFail();
+            $income->delete();
 
-            return response()->json($income);
-        }catch (Throwable $e){
-            return response()->json(['message' => "oops! looks like something went wrong !"]);
+            return response()->json(["message" => "income deleted successfully !"]);
+        }catch(Throwable $e){
+            return response()->json([
+                "message" => "somthing just happened !",
+                "error" => $e->getMessage()
+            ]);
         }
-    }
-
-    public function destroy($id){
-
     }
 }
