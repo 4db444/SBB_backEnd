@@ -27,22 +27,21 @@ class IncomeController extends Controller
     public function store (Request $request){
         try{
             $validated_income = $request->validate([
-                "amount" => "required|numeric|min:0|",
+                "amount" => "required|numeric|min:0",
                 "description" => "nullable|string|max:1000",
                 "category" => "nullable|string|max:255",
             ]);
 
             $user = Auth::user();
-            $category = null;
+            
+            $income = new Income($validated_income);
+            $income->user()->associate($user);
 
             if(!empty($validated_income["category"])){
                 $category = IncomeCategory::where(["name" => $validated_income["category"]])->first();
+                if($category) $income->category()->associate($category);
             }
 
-            $income = Income::create($validated_income);
-
-            if($category) $income->category()->associate($category);
-            $income->user()->associate($user);
             $income->save();
 
             return response()->json(["message" => "income created successfully !"]);
@@ -54,7 +53,7 @@ class IncomeController extends Controller
         }
     }
 
-    public function destroy($id){
+    public function destroy ($id){
         try{
             $user = Auth::user();
             $income = $user->incomes()->where("id", $id)->firstOrFail();
@@ -64,6 +63,36 @@ class IncomeController extends Controller
         }catch(Throwable $e){
             return response()->json([
                 "message" => "somthing just happened !",
+                "error" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function update (Request $request, $id){
+        try{
+            $validated_income = $request->validate([
+                "amount" => "required|min:0|numeric",
+                "description" => "nullable|string|max:1000",
+                "category" => "nullable|string|max:255"
+            ]);
+            
+            $user = Auth::user();
+            
+            $income = $user->incomes()->where("id", $id)->firstOrFail();
+            $income->update($validated_income);
+            
+            if(!empty($validated_income["category"])) {
+                $category = IncomeCategory::where(["name" => $validated_income["category"]])->first();
+                $income->category()->associate($category);
+            }else{
+                $income->category()->dissociate();
+            }
+
+            $income->save();
+            return response()->json(['message' => "income updated successfully !"]);
+        }catch(Throwable $e){
+            return response()->json([
+                "message" => "something happened !",
                 "error" => $e->getMessage()
             ]);
         }
