@@ -68,6 +68,52 @@ class ExpenseController extends Controller
         }
     }
 
+    public function update (Request $request, $id){
+        try{
+            $validated_expense = $request->validate([
+                "amount" => "required|numeric|min:0",
+                "description" => "nullable|string|max:1000",
+                "group" => "nullable",
+                "category" => "nullable|string|max:255",
+            ]);
+
+            $user = Auth::user();
+            $expense = $user->expenses()->findOrFail($id);
+
+            $expense->update([
+                "amount" => $validated_expense["amount"],
+                "description" => $validated_expense["description"]
+            ]);
+
+            if(!empty($validated_expense["group"])){
+                $group = $user->groups()->findOrFail($validated_expense['group']);
+
+                $expense->group()->associate($group);
+            }else{
+                $expense->group()->dissociate();
+            }
+
+            if(!empty($validated_expense["category"])){
+                $category = ExpenseCategory::where(["name" => $validated_expense["category"]])->firstOrFail();
+
+                $expense->category()->associate($category);
+            }else{
+                $expense->category()->dissociate();
+            }
+
+            $expense->save();
+
+            return response()->json([
+                "message" => "expense updated successfully !"
+            ]);
+        }catch(Throwable $e){
+            return response()->json([
+                "message" => "something just happened !",
+                "error" => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroy ($id){
 
         try{
