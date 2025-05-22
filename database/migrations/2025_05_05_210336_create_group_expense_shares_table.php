@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->float("amount");
             $table->unsignedBigInteger("user_id");
-            $table->unsignedBigInteger("expense_id");
+            $table->ulid("expense_id");
 
             $table->foreign("user_id")->references("id")->on("users");
             $table->foreign("expense_id")->references("id")->on("expenses");

@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('expenses', function (Blueprint $table) {
-            $table->id();
+            $table->ulid("id")->primary();
             $table->float("amount");
-            $table->text("description");
+            $table->text("description")->nullable();
             
             $table->unsignedBigInteger("expense_category_id")->nullable();
             $table->unsignedBigInteger("group_id")->nullable();
