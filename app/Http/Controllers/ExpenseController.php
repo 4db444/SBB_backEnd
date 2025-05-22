@@ -67,4 +67,29 @@ class ExpenseController extends Controller
             ], 500);
         }
     }
+
+    public function destroy ($id){
+
+        try{
+            $user = Auth::user();
+            $expense = $user->expenses()->find($id);
+            
+            if($expense){
+                $expense->delete();
+                return response()->json([
+                    "message" => "expense deleted successfully !"
+                ]);
+            }
+
+            return response()->json([
+                "message" => "expense does not exist !"
+            ], 404);
+        }catch(Throwable $e){
+            return response()->json([
+                "message" => "something just happened",
+                "error" => $e->getMessage()
+            ]);
+        }
+
+    }
 }
