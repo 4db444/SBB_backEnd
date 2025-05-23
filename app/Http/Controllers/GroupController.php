@@ -15,6 +15,12 @@ class GroupController extends Controller
             ]);
     
             $user = Auth::user();
+
+            if($user->groups()->where(["name" => $validated_request["name"]])->exists()){
+                return response()->json([
+                    "error" => "deplicate name for group : ". $validated_request["name"]
+                ], 409);
+            };
     
             $group = Group::create([
                 "name" => $validated_request["name"]
