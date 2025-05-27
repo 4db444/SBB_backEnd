@@ -31,11 +31,11 @@ class User extends Authenticable
 
     public function groupExpenseShares (){
         return $this->belongsToMany(Expense::class, "group_expense_shares")
-            ->withPivote("amount")
+            ->withPivot("amount")
             ->withTimestamps();
     }
 
     public function groups (){
-        return $this->belongsToMany(Group::class, "group_members")->withTimestamps();
+        return $this->belongsToMany(Group::class, "group_members")->withPivot("is_admin");
     }
 }

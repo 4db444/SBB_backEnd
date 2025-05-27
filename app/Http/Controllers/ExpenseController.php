@@ -14,7 +14,8 @@ class ExpenseController extends Controller
     public function index (){
         try{
             $user = Auth::user();
-            $expenses = $user->expenses;
+            $expenses = $user->expenses
+                ->load("category");
     
             return response()->json($expenses);
         }catch(Throwable $e){
@@ -31,7 +32,8 @@ class ExpenseController extends Controller
                 "amount" => "required|numeric|min:0",
                 "description" => "nullable|string|max:1000",
                 "category" => "nullable|string|max:255", 
-                "group" => "nullable", 
+                "group" => "nullable",
+                "members" => "nullable|array"
             ]);
     
             $user = Auth::user();
@@ -50,16 +52,28 @@ class ExpenseController extends Controller
             }
     
             if(!empty($validated_expense["group"])){
-                $group = $user->groups()->find($validated_expense["group"]);
-    
-                if($group) $expense->group()->associate($group);
+
+                if(!empty($validated_expense['members'])){
+                    $expense->save();
+                    $group = $user->groups()->find($validated_expense["group"]);
+                    $ids = $validated_expense['members'];
+
+                    $member_part = $validated_expense['amount'] / count($ids);
+
+                    foreach($ids as $id){
+                        $member = $group->members->find($id);
+                        $member->groupExpenseShares()->attach($expense, ["amount" => $member_part]);
+                    }
+                    
+                    if($group) $expense->group()->associate($group);
+                }else{
+                    return response()->json(["error" => "no members specified !"], 400);
+                }
             }
     
             $expense->save();
 
-            return response()->json([
-                "message" => "expense registred successfully !"
-            ]);
+            return response()->json($expense);
         }catch(Throwable $e){
             return response()->json([
                 "message" => "oops! something just happened !",
@@ -137,5 +151,19 @@ class ExpenseController extends Controller
             ]);
         }
 
+    }
+
+    public function categories (){
+        try{
+            $expenseCategories = ExpenseCategory::where("id_parent_category", null)->get();
+
+            $expenseCategories->load("children");
+
+            return response()->json($expenseCategories);
+        }catch (Throwable $e){
+            return response()->json([
+                "error" => $e->getMessage()
+            ]);
+        }
     }
 }

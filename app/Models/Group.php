@@ -12,8 +12,8 @@ class Group extends Model
         "name"
     ];
 
-    public function users (){
-        return $this->belongsToMany(User::class);
+    public function members (){
+        return $this->belongsToMany(User::class, "group_members");
     }
 
     public function expenses (){

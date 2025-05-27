@@ -13,7 +13,7 @@ class IncomeController extends Controller
     public function index (){
         try{
             $user = Auth::user();
-            $incomes = $user->incomes;
+            $incomes = $user->incomes->load("category");
     
             return response()->json($incomes);
         }catch(Throwable $e){
@@ -44,7 +44,9 @@ class IncomeController extends Controller
 
             $income->save();
 
-            return response()->json(["message" => "income created successfully !"]);
+            // $income->load("cateory");
+
+            return response()->json($income);
         }catch(Throwable $e){
             return response()->json([
                 "message" => "something just went wrong !",
@@ -93,6 +95,20 @@ class IncomeController extends Controller
         }catch(Throwable $e){
             return response()->json([
                 "message" => "something happened !",
+                "error" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function categories (){
+        try{
+            $incomeCategories = IncomeCategory::where("id_parent_category", null)->get();
+
+            $incomeCategories->load("children");
+
+            return response()->json($incomeCategories);
+        }catch (Throwable $e){
+            return response()->json([
                 "error" => $e->getMessage()
             ]);
         }

@@ -8,6 +8,30 @@ use App\Models\Group;
 
 class GroupController extends Controller
 {
+    public function index (){
+        try{
+            $user = Auth::user();
+            $groups = $user->groups->load("members");
+
+            $groups->each(function ($group) {
+                if ($group->pivot) {
+                    unset($group->pivot->user_id, $group->pivot->group_id);
+                }
+                $group->members->each(function ($member) {
+                    if ($member->pivot) {
+                        unset($member->pivot);
+                    }
+                });
+            });
+    
+            return response()->json($groups);
+        }catch(Throwable $e){
+            return response()->json([
+                "error" => $e->getMessage()
+            ]);
+        }
+    }
+
     public function store (Request $request){
         try{
             $validated_request = $request->validate([

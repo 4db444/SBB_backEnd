@@ -19,6 +19,7 @@ Route::middleware("auth:sanctum")->group(function(){
         Route::post("/", [IncomeController::class, "store"]);
         Route::put("/{id}", [IncomeController::class, "update"]);
         Route::delete("/{id}", [IncomeController::class, "destroy"]);
+        Route::get("/categories", [IncomeController::class, "categories"]);
     });
     
     Route::prefix("/expense")->group(function(){
@@ -26,16 +27,15 @@ Route::middleware("auth:sanctum")->group(function(){
         Route::post("/", [ExpenseController::class, "store"]);
         Route::put("/{id}", [ExpenseController::class, "update"]);
         Route::delete("/{id}", [ExpenseController::class, "destroy"]);
+        Route::get("/categories", [ExpenseController::class, "categories"]);
     });
 
     Route::prefix("/group")->group(function(){
         Route::get("/", [GroupController::class, "index"]);
         Route::post("/", [GroupController::class, "store"]);
-        Route::get("/{id}/members", [GroupController::class, "members"]);
         Route::post("/{id}/generate", [GroupController::class, "generate_token"]);
         Route::get("/join/{join_token}", [GroupController::class, "join"]);
     });
-    
 });
 
 Route::middleware("guest")->group(function (){
